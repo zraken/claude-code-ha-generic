@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.6.3
+
+### 🐛 Bug Fix - Image Service Startup Logging
+- **Improved error visibility**: Node.js console output now shown directly in add-on logs
+  - **Previous issue**: Errors were hidden in /var/log/image-service.log
+  - **Solution**: Pipe Node.js stdout/stderr directly to add-on logs with `[Image Service]` prefix
+  - **Added checks**: Verify server.js and node_modules exist before starting
+  - **Auto-recovery**: Attempt `npm install` if node_modules is missing
+  - **Result**: All startup errors now visible in `ha addons logs`
+
+This will help diagnose why the image service isn't starting properly.
+
 ## 1.6.2
 
 ### 🐛 Critical Bug Fix - Express Route Order
