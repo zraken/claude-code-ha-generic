@@ -9,6 +9,8 @@ get_claude_flags() {
     if [ "${CLAUDE_DANGEROUS_MODE}" = "true" ]; then
         flags="--dangerously-skip-permissions"
         echo "⚠️  Running in DANGEROUS mode (unrestricted file access)" >&2
+        # Set IS_SANDBOX=1 to allow dangerous mode when running as root
+        export IS_SANDBOX=1
     fi
     echo "$flags"
 }

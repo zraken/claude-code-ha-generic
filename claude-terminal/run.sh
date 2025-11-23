@@ -46,6 +46,11 @@ init_environment() {
     dangerously_skip_permissions=$(bashio::config 'dangerously_skip_permissions' 'false')
     export CLAUDE_DANGEROUS_MODE="$dangerously_skip_permissions"
 
+    # Set IS_SANDBOX=1 to allow --dangerously-skip-permissions when running as root
+    if [ "$dangerously_skip_permissions" = "true" ]; then
+        export IS_SANDBOX=1
+    fi
+
     # Setup persistent package paths (HIGHEST PRIORITY)
     export PATH="$persist_bin:$persist_python/venv/bin:$PATH"
     export LD_LIBRARY_PATH="$persist_lib:${LD_LIBRARY_PATH:-}"
