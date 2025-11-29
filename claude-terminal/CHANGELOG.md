@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.5
+
+### ✨ New Feature - Claude Home Assistant Plugins Pre-installed
+- **Home Assistant plugins included in Docker image**: Plugins are now automatically installed during build
+  - No manual installation required
+  - `CLAUDE.md` with HA-specific context automatically created in `/config`
+  - Provides Claude Code with specialized tools for Home Assistant development
+  - Plugin source: [@ESJavadex/claude-homeassistant-plugins](https://github.com/ESJavadex/claude-homeassistant-plugins)
+
 ## 1.7.4
 
 ### ✨ New Feature - Git Pre-installed
