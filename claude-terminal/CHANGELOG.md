@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.9
+
+### 🐛 Bug Fix - GLM Environment Variables Not Persisted to Terminal
+- **Fixed "Missing plan or API key" error**: GLM environment variables now available in ttyd sessions
+  - **Root cause**: GLM_CONFIG_DIR and ZAI_CONFIG_DIR were set during startup but not in profile script
+  - ttyd bash sessions load /etc/profile.d/persistent-packages.sh but didn't have GLM variables
+  - **Solution**: Added GLM environment variables to persistent profile script
+  - **Result**: chelper can now find GLM configuration when running in terminal
+
+- **Technical fix**:
+  - Added `export GLM_CONFIG_DIR="/data/.config/glm"` to profile script
+  - Added `export ZAI_CONFIG_DIR="/data/.config/glm"` to profile script
+  - GLM config now persists across all bash sessions
+
 ## 2.0.8
 
 ### 🐛 Bug Fix - GLM Debug Visibility

@@ -91,6 +91,10 @@ export ANTHROPIC_HOME="/data"
 # GitHub CLI persistent configuration
 export GH_CONFIG_DIR="/data/.config/gh"
 
+# GLM coding helper configuration
+export GLM_CONFIG_DIR="/data/.config/glm"
+export ZAI_CONFIG_DIR="/data/.config/glm"
+
 # Persistent package paths (HIGHEST PRIORITY)
 export PATH="/data/packages/bin:/data/packages/python/venv/bin:$PATH"
 export LD_LIBRARY_PATH="/data/packages/lib:${LD_LIBRARY_PATH:-}"
