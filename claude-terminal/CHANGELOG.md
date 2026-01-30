@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.1
+
+### 🐛 Bug Fix - GLM Authentication Hanging
+- **Fixed GLM initialization hanging**: Added debug output and improved authentication method
+  - **Issue**: `chelper auth glm_coding_plan_global` was hanging/waiting for input
+  - **Fix**: Changed input method to use pipe with echo and sleep for proper timing
+  - **Added debug output**: Errors now shown in terminal to help troubleshoot
+
 ## 2.1.0
 
 ### 🔄 Refactor - GLM Backend Initialization Redesigned

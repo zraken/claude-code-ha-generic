@@ -16,19 +16,20 @@ if [ -f "$GLM_ENABLED_CONFIG" ] && [ -f "$GLM_API_KEY_FILE" ]; then
     GLM_API_KEY=$(cat "$GLM_API_KEY_FILE")
 
     if [ -n "$GLM_API_KEY" ] && command -v chelper >/dev/null 2>&1; then
-        echo "Initializing GLM backend..."
+        echo "Initializing GLM backend..." >&2
 
-        # Set language (may prompt, use default)
-        chelper lang set en_US >/dev/null 2>&1 || true
+        # Set language
+        chelper lang set en_US 2>&1 | grep -v "^$" || true
 
-        # Authenticate using the stored API key
-        # Use a here-document to avoid exposing the key in ps
-        chelper auth glm_coding_plan_global >/dev/null 2>&1 <<< "$GLM_API_KEY" || true
+        # Authenticate using the stored API key via stdin
+        # Use echo with pipe to pass the key
+        (echo "$GLM_API_KEY"; sleep 1) | chelper auth glm_coding_plan_global 2>&1 | head -5 || true
 
         # Reload Claude to use GLM backend
-        chelper auth reload claude >/dev/null 2>&1 || echo "Note: GLM backend may not be active"
+        echo "Reloading Claude with GLM backend..." >&2
+        chelper auth reload claude 2>&1 || echo "Note: GLM backend may not be active" >&2
 
-        echo ""
+        echo "" >&2
     fi
 fi
 
