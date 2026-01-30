@@ -42,7 +42,7 @@ To add this repository to your Home Assistant instance:
 1. Go to **Settings** → **Add-ons** → **Add-on Store**
 2. Click the three dots menu in the top right corner
 3. Select **Repositories**
-4. Add the URL: `https://github.com/esjavadex/claude-code-ha`
+4. Add the URL: `https://github.com/zraken/claude-code-ha-generic`
 5. Click **Add**
 
 ## Add-ons
