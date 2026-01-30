@@ -25,7 +25,7 @@ This creates a `CLAUDE.md` file in your Home Assistant config directory with con
 This project is a fork of [heytcass/home-assistant-addons](https://github.com/heytcass/home-assistant-addons) created by Tom Cassady.
 
 **Original project:** [https://github.com/heytcass/home-assistant-addons](https://github.com/heytcass/home-assistant-addons)
-**Maintained by:** Javier Santos ([@esjavadex](https://github.com/esjavadex))
+**Maintained by:** zraken ([@zraken](https://github.com/zraken))
 
 ### What's Enhanced in This Fork
 
@@ -97,7 +97,7 @@ If you have any questions or issues with this add-on, please create an issue in 
 ## Credits
 
 **Original Creator:** Tom Cassady ([@heytcass](https://github.com/heytcass)) - Created the initial Claude Terminal add-on
-**Fork Maintainer:** Javier Santos ([@esjavadex](https://github.com/esjavadex)) - Added persistent package management and enhancements
+**Fork Maintainer:** zraken ([@zraken](https://github.com/zraken)) - Enhanced with GLM coding plan support
 
 This add-on was created and enhanced with the assistance of Claude Code itself! The development process, debugging, and documentation were all completed using Claude's AI capabilities.
 

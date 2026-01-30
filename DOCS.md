@@ -11,7 +11,7 @@ Follow these steps to install the add-on:
 1. Navigate to your Home Assistant instance
 2. Go to Settings -> Add-ons -> Add-on Store
 3. Click the three dots in the top right corner and select "Repositories"
-4. Add the URL of this repository and click "Add"
+4. Add the URL: `https://github.com/zraken/claude-code-ha-generic` and click "Add"
 5. Find the "Claude Terminal" add-on and click on it
 6. Click "Install"
 
