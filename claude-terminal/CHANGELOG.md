@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.7
+
+### 🐛 Bug Fix - GLM Backend Not Loading on Terminal Start
+- **Fixed GLM login prompt appearing**: GLM backend now reloads when terminal starts
+  - **Root cause**: GLM authentication ran at container startup, but Claude in terminal didn't reload the backend
+  - **Solution**: Added `chelper auth reload claude` to terminal launch command
+  - **Result**: GLM backend is now active immediately when opening the terminal
+
+- **Technical fix**:
+  - Modified `get_claude_launch_command()` to check `glm_enabled` config
+  - Pre-launch command reloads GLM backend before Claude starts
+  - Changed `node \$(which claude)` to `exec claude` for consistency
+
 ## 2.0.6
 
 ### ✨ New Feature - z.ai GLM Coding Helper Support
