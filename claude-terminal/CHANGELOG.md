@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.1.0
+
+### 🔄 Refactor - GLM Backend Initialization Redesigned
+- **New approach for GLM backend loading**: GLM authentication now runs in terminal session environment
+  - **Previous issue**: GLM credentials were stored during container startup but `chelper auth reload claude` ran in a different environment
+  - **New solution**: Created `start-claude-with-glm.sh` wrapper that runs GLM authentication in the terminal session before launching Claude
+  - **Result**: GLM backend is now properly initialized and active when Claude starts
+
+- **Technical changes**:
+  - GLM API key is securely stored in `/data/.config/glm-api-key` (600 permissions)
+  - GLM enabled flag stored in `/data/.config/glm-enabled`
+  - Wrapper script `start-claude-with-glm` sources profile, authenticates with GLM, and reloads Claude backend
+  - All GLM setup happens in the same environment where Claude runs
+  - Simplified launch command - wrapper handles all GLM logic
+
+- **User experience**:
+  - Terminal shows "Initializing GLM backend..." message during startup
+  - Claude starts directly with GLM backend active - no login prompt
+  - GLM authentication persists across container restarts
+
 ## 2.0.9
 
 ### 🐛 Bug Fix - GLM Environment Variables Not Persisted to Terminal

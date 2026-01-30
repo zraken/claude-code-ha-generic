@@ -263,16 +263,34 @@ setup_glm_helper() {
         if [ -z "$glm_api_key" ]; then
             bashio::log.info "GLM support is enabled but no API key provided"
             bashio::log.info "To use GLM coding helper, add your API key in the add-on configuration"
+            # Remove GLM flag file if key is not provided
+            rm -f /data/.config/glm-enabled
+            rm -f /data/.config/glm-api-key
             return 0
         fi
 
         bashio::log.info "GLM support enabled, setting up..."
-        chmod +x /opt/scripts/glm-auth-helper.sh
 
-        # Run GLM authentication
-        /opt/scripts/glm-auth-helper.sh "$glm_api_key" || bashio::log.error "GLM setup failed"
+        # Save GLM API key to a file for later use by the wrapper script
+        echo "$glm_api_key" > /data/.config/glm-api-key
+        chmod 600 /data/.config/glm-api-key
+
+        # Create flag file to indicate GLM is enabled
+        touch /data/.config/glm-enabled
+
+        # Copy the wrapper script to /usr/local/bin
+        if [ -f "/opt/scripts/start-claude-with-glm.sh" ]; then
+            cp /opt/scripts/start-claude-with-glm.sh /usr/local/bin/start-claude-with-glm
+            chmod +x /usr/local/bin/start-claude-with-glm
+            bashio::log.info "GLM wrapper script installed"
+        fi
+
+        bashio::log.info "GLM configuration saved for terminal sessions"
     else
         bashio::log.info "GLM support disabled"
+        # Clean up GLM files if disabled
+        rm -f /data/.config/glm-enabled
+        rm -f /data/.config/glm-api-key
     fi
 }
 
@@ -284,7 +302,7 @@ get_claude_launch_command() {
     local dangerously_skip_permissions
     local glm_enabled
     local claude_flags=""
-    local pre_launch_commands=""
+    local claude_binary="claude"
 
     # Get configuration values
     auto_launch_claude=$(bashio::config 'auto_launch_claude' 'true')
@@ -297,24 +315,23 @@ get_claude_launch_command() {
         bashio::log.warning "Claude will run with --dangerously-skip-permissions (unrestricted file access)"
     fi
 
-    # If GLM is enabled, add pre-launch command to reload the backend
+    # If GLM is enabled, use the wrapper script
     if [ "$glm_enabled" = "true" ]; then
-        # Use full path to chelper to avoid PATH issues
-        pre_launch_commands="echo 'Loading GLM backend...' && if command -v chelper >/dev/null 2>&1; then chelper auth reload claude || echo 'Warning: GLM reload failed'; else echo 'Warning: chelper not found - GLM may not work'; fi && echo '' && "
-        bashio::log.info "GLM backend will be loaded on terminal start"
+        claude_binary="start-claude-with-glm"
+        bashio::log.info "GLM wrapper will be used for Claude launch"
     fi
 
     if [ "$auto_launch_claude" = "true" ]; then
         # Original behavior: auto-launch Claude directly
-        echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && ${pre_launch_commands}echo 'Starting Claude...' && sleep 1 && exec claude ${claude_flags}"
+        echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && echo 'Starting Claude...' && sleep 1 && exec ${claude_binary} ${claude_flags}"
     else
         # New behavior: show interactive session picker
         if [ -f /usr/local/bin/claude-session-picker ]; then
-            echo "clear && ${pre_launch_commands}/usr/local/bin/claude-session-picker"
+            echo "clear && /usr/local/bin/claude-session-picker"
         else
             # Fallback if session picker is missing
             bashio::log.warning "Session picker not found, falling back to auto-launch"
-            echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && ${pre_launch_commands}echo 'Starting Claude...' && sleep 1 && exec claude"
+            echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && echo 'Starting Claude...' && sleep 1 && exec ${claude_binary}"
         fi
     fi
 }
