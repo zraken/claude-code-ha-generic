@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.0.6
+
+### ✨ New Feature - z.ai GLM Coding Helper Support
+- **Alternative AI backend**: Added support for z.ai GLM coding helper as an alternative to Anthropic's Claude API
+  - **Configuration-based**: Enable GLM by adding your API key in add-on options (`glm_api_key`)
+  - **Opt-out default**: GLM is enabled by default when API key is provided (`glm_enabled: true`)
+  - **Automatic authentication**: GLM backend authenticates automatically on container startup
+  - **Persistent installation**: `@z_ai/coding-helper` npm package pre-installed in Docker image
+  - **Seamless switching**: Set `glm_enabled: false` to use Anthropic's API instead
+
+- **How to use GLM**:
+  1. Get your GLM coding plan API token from z.ai
+  2. Add it to add-on configuration: `glm_api_key: "YOUR_TOKEN"`
+  3. Restart the add-on
+  4. Claude Terminal will automatically use GLM backend
+
+- **Technical details**:
+  - GLM config stored in `/data/.config/glm/` (survives restarts)
+  - Uses standard `chelper` CLI commands (`chelper auth`, `chelper lang`, etc.)
+  - Token authenticated via stdin to avoid process list exposure
+  - Retry logic in Dockerfile for reliable npm package installation
+
+### 🔧 Technical
+- **New authentication script**: `glm-auth-helper.sh` handles GLM authentication flow
+- **Environment variables**: Added `GLM_CONFIG_DIR` and `ZAI_CONFIG_DIR` for GLM configuration
+- **Error handling**: Graceful fallback when GLM is enabled but API key is missing
+
 ## 2.0.5
 
 ### 🐛 Bug Fix - Claude CLI Not Found

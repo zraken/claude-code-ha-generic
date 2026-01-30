@@ -33,6 +33,13 @@ RUN apk add --no-cache \
         break || \
         (echo "Attempt $i failed, retrying in 10 seconds..." && sleep 10); \
     done \
+    && for i in 1 2 3; do \
+        echo "Attempt $i: Installing GLM Coding Helper..." && \
+        npm install -g @z_ai/coding-helper && \
+        echo "Successfully installed GLM Coding Helper" && \
+        break || \
+        (echo "Attempt $i failed, retrying in 10 seconds..." && sleep 10); \
+    done \
     && npm cache clean --force
 
 # Install Home Assistant CLI (ha command)

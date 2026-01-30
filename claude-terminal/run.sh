@@ -45,6 +45,16 @@ init_environment() {
     # GitHub CLI persistent configuration
     export GH_CONFIG_DIR="$gh_config_dir"
 
+    # GLM-specific environment variables
+    export GLM_CONFIG_DIR="/data/.config/glm"
+    export ZAI_CONFIG_DIR="/data/.config/glm"
+
+    # Create GLM config directory
+    if [ ! -d "$GLM_CONFIG_DIR" ]; then
+        mkdir -p "$GLM_CONFIG_DIR"
+        chmod 755 "$GLM_CONFIG_DIR"
+    fi
+
     # Get dangerously-skip-permissions configuration
     local dangerously_skip_permissions
     dangerously_skip_permissions=$(bashio::config 'dangerously_skip_permissions' 'false')
@@ -237,6 +247,31 @@ auto_install_packages() {
     fi
 }
 
+# Setup GLM coding helper if enabled
+setup_glm_helper() {
+    local glm_enabled
+    glm_enabled=$(bashio::config 'glm_enabled' 'false')
+
+    if [ "$glm_enabled" = "true" ]; then
+        local glm_api_key
+        glm_api_key=$(bashio::config 'glm_api_key' '')
+
+        if [ -z "$glm_api_key" ]; then
+            bashio::log.info "GLM support is enabled but no API key provided"
+            bashio::log.info "To use GLM coding helper, add your API key in the add-on configuration"
+            return 0
+        fi
+
+        bashio::log.info "GLM support enabled, setting up..."
+        chmod +x /opt/scripts/glm-auth-helper.sh
+
+        # Run GLM authentication
+        /opt/scripts/glm-auth-helper.sh "$glm_api_key" || bashio::log.error "GLM setup failed"
+    else
+        bashio::log.info "GLM support disabled"
+    fi
+}
+
 # Legacy monitoring functions removed - using simplified /data approach
 
 # Determine Claude launch command based on configuration
@@ -377,6 +412,7 @@ main() {
     install_tools
     setup_session_picker
     setup_persistent_packages
+    setup_glm_helper
     start_web_terminal
 }
 
