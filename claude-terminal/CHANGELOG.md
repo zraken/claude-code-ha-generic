@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.8
+
+### 🐛 Bug Fix - GLM Debug Visibility
+- **Added diagnostic output for GLM loading**: Users can now see what's happening when GLM backend loads
+  - Shows "Loading GLM backend..." message before attempting reload
+  - Displays warnings if chelper is not found or reload fails
+  - Removed silent error suppression to help diagnose issues
+
+- **Better error handling**:
+  - Checks if `chelper` command exists before running
+  - Shows specific error messages instead of silent failures
+  - Helps identify if GLM is properly installed
+
 ## 2.0.7
 
 ### 🐛 Bug Fix - GLM Backend Not Loading on Terminal Start

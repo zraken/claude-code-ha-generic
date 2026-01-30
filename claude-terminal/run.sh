@@ -295,7 +295,8 @@ get_claude_launch_command() {
 
     # If GLM is enabled, add pre-launch command to reload the backend
     if [ "$glm_enabled" = "true" ]; then
-        pre_launch_commands="chelper auth reload claude 2>/dev/null && "
+        # Use full path to chelper to avoid PATH issues
+        pre_launch_commands="echo 'Loading GLM backend...' && if command -v chelper >/dev/null 2>&1; then chelper auth reload claude || echo 'Warning: GLM reload failed'; else echo 'Warning: chelper not found - GLM may not work'; fi && echo '' && "
         bashio::log.info "GLM backend will be loaded on terminal start"
     fi
 
