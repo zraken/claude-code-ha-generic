@@ -21,9 +21,9 @@ if [ -f "$GLM_ENABLED_CONFIG" ] && [ -f "$GLM_API_KEY_FILE" ]; then
         # Set language
         chelper lang set en_US 2>&1 | grep -v "^$" || true
 
-        # Authenticate using the stored API key via stdin
-        # Use echo with pipe to pass the key
-        (echo "$GLM_API_KEY"; sleep 1) | chelper auth glm_coding_plan_global 2>&1 | head -5 || true
+        # Authenticate using the stored API key as direct argument
+        echo "Authenticating with GLM..." >&2
+        chelper auth glm_coding_plan_global "$GLM_API_KEY" 2>&1 || echo "Warning: GLM auth may have failed" >&2
 
         # Reload Claude to use GLM backend
         echo "Reloading Claude with GLM backend..." >&2

@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.1.3
+
+### 🐛 Bug Fix - GLM Authentication Method
+- **Fixed GLM authentication failing with "Missing plan or API key" error**
+  - **Issue**: `chelper auth` was receiving token via stdin pipe, which doesn't work
+  - **Fix**: Changed to pass API key as direct command argument
+  - **Before**: `(echo "$GLM_API_KEY"; sleep 1) | chelper auth glm_coding_plan_global`
+  - **After**: `chelper auth glm_coding_plan_global "$GLM_API_KEY"`
+  - Added "Authenticating with GLM..." message for better feedback
+
+## 2.1.2
+
+### 🐛 Bug Fix - GLM Backend Onboarding Skip
+- **Fixed Claude showing onboarding with GLM backend**: GLM now starts without login/theme prompts
+  - **Issue**: GLM authentication ran but Claude didn't recognize it, triggering first-run onboarding flow
+  - **Root cause**: GLM's `chelper auth` doesn't create Claude's expected credentials file (`~/.claude/.credentials.json`)
+  - **Solution**: Pre-create Claude's configuration files during GLM setup to bypass onboarding
+  - **Files created**:
+    - `/data/home/.claude/.credentials.json` - Credentials with placeholder token to skip login
+    - `/data/home/.claude/config.json` - Dark theme pre-selected to skip theme prompt
+
+- **Technical details**:
+  - New `setup_claude_config_for_glm()` function in `run.sh`
+  - Only creates files if they don't exist (respects existing configs)
+  - Files are cleaned up when GLM is disabled
+  - Uses standard Claude config format from Reddit research
+
 ## 2.1.1
 
 ### 🐛 Bug Fix - GLM Authentication Hanging

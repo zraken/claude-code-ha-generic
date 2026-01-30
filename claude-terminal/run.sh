@@ -278,6 +278,10 @@ setup_glm_helper() {
         # Create flag file to indicate GLM is enabled
         touch /data/.config/glm-enabled
 
+        # Create Claude's configuration files to skip onboarding
+        # This prevents Claude from showing first-run login/theme prompts
+        setup_claude_config_for_glm
+
         # Copy the wrapper script to /usr/local/bin
         if [ -f "/opt/scripts/start-claude-with-glm.sh" ]; then
             cp /opt/scripts/start-claude-with-glm.sh /usr/local/bin/start-claude-with-glm
@@ -291,6 +295,50 @@ setup_glm_helper() {
         # Clean up GLM files if disabled
         rm -f /data/.config/glm-enabled
         rm -f /data/.config/glm-api-key
+        # Also remove Claude config files created for GLM (if they were created by us)
+        rm -f /data/home/.claude/.credentials.json
+        rm -f /data/home/.claude/config.json
+    fi
+}
+
+# Create Claude's configuration files to skip onboarding when using GLM
+setup_claude_config_for_glm() {
+    local claude_home="/data/home/.claude"
+
+    # Create Claude's home directory if it doesn't exist
+    if [ ! -d "$claude_home" ]; then
+        mkdir -p "$claude_home"
+        chmod 755 "$claude_home"
+        bashio::log.info "Created Claude config directory: $claude_home"
+    fi
+
+    # Create credentials.json with a placeholder token
+    # This prevents Claude from showing the login/onboarding screen
+    local credentials_file="$claude_home/.credentials.json"
+    if [ ! -f "$credentials_file" ]; then
+        cat > "$credentials_file" << 'EOF'
+{
+  "claudeAiOauth": {
+    "accessToken": "glm_token_placeholder",
+    "subscriptionType": "pro"
+  }
+}
+EOF
+        chmod 600 "$credentials_file"
+        bashio::log.info "Created Claude credentials file to skip onboarding"
+    fi
+
+    # Create config.json with dark theme pre-selected
+    # This prevents Claude from showing the theme selection screen
+    local config_file="$claude_home/config.json"
+    if [ ! -f "$config_file" ]; then
+        cat > "$config_file" << 'EOF'
+{
+  "theme": "dark"
+}
+EOF
+        chmod 644 "$config_file"
+        bashio::log.info "Created Claude config with dark theme pre-selected"
     fi
 }
 
