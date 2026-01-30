@@ -29,11 +29,9 @@ This project is a fork of [heytcass/home-assistant-addons](https://github.com/he
 
 ### What's Enhanced in This Fork
 
-- **Image Paste Support**: Upload images via paste (Ctrl+V), drag-drop, or upload button for Claude analysis
-- **Persistent Package Management**: Install system and Python packages that survive reboots
-- **Auto-install Configuration**: Configure packages to auto-install on startup
-- **Improved Credential Handling**: Enhanced authentication persistence
-- **Additional Documentation**: Comprehensive guides for development and usage
+- **z.ai GLM Coding Plan Support**: Use GLM as an alternative AI backend by adding your API key in the add-on configuration
+  - Enable by setting `glm_enabled: true` and providing your `glm_api_key`
+  - Seamlessly switches between Anthropic Claude and GLM backends
 
 This project maintains the same MIT license as the original.
 
@@ -79,6 +77,8 @@ A web-based terminal interface with Claude Code CLI pre-installed and enhanced p
 #### Configuration Options
 - `auto_launch_claude`: Auto-start Claude or show session picker (default: true)
 - `dangerously_skip_permissions`: Enable unrestricted file access (default: false)
+- `glm_enabled`: Enable z.ai GLM coding plan as alternative backend (default: true)
+- `glm_api_key`: Your GLM coding plan API key
 - `persistent_apk_packages`: System packages to auto-install
 - `persistent_pip_packages`: Python packages to auto-install
 
