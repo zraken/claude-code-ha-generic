@@ -278,11 +278,14 @@ setup_glm_helper() {
 get_claude_launch_command() {
     local auto_launch_claude
     local dangerously_skip_permissions
+    local glm_enabled
     local claude_flags=""
+    local pre_launch_commands=""
 
     # Get configuration values
     auto_launch_claude=$(bashio::config 'auto_launch_claude' 'true')
     dangerously_skip_permissions=$(bashio::config 'dangerously_skip_permissions' 'false')
+    glm_enabled=$(bashio::config 'glm_enabled' 'false')
 
     # Build Claude flags
     if [ "$dangerously_skip_permissions" = "true" ]; then
@@ -290,17 +293,23 @@ get_claude_launch_command() {
         bashio::log.warning "Claude will run with --dangerously-skip-permissions (unrestricted file access)"
     fi
 
+    # If GLM is enabled, add pre-launch command to reload the backend
+    if [ "$glm_enabled" = "true" ]; then
+        pre_launch_commands="chelper auth reload claude 2>/dev/null && "
+        bashio::log.info "GLM backend will be loaded on terminal start"
+    fi
+
     if [ "$auto_launch_claude" = "true" ]; then
         # Original behavior: auto-launch Claude directly
-        echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && echo 'Starting Claude...' && sleep 1 && node \$(which claude) ${claude_flags}"
+        echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && ${pre_launch_commands}echo 'Starting Claude...' && sleep 1 && exec claude ${claude_flags}"
     else
         # New behavior: show interactive session picker
         if [ -f /usr/local/bin/claude-session-picker ]; then
-            echo "clear && /usr/local/bin/claude-session-picker"
+            echo "clear && ${pre_launch_commands}/usr/local/bin/claude-session-picker"
         else
             # Fallback if session picker is missing
             bashio::log.warning "Session picker not found, falling back to auto-launch"
-            echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && echo 'Starting Claude...' && sleep 1 && node \$(which claude)"
+            echo "clear && echo 'Welcome to Claude Terminal!' && echo '' && ${pre_launch_commands}echo 'Starting Claude...' && sleep 1 && exec claude"
         fi
     fi
 }
